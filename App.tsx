@@ -1,20 +1,44 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { CombinedDarkTheme, CombinedDefaultTheme } from 'themeConfig';
+import { store, useAppDispatch, useAppSelector } from '@redux';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { PaperProvider } from 'react-native-paper';
+import { NavigationContainer } from "@react-navigation/native";
+import { Provider } from 'react-redux';
+import Screens from 'Screens';
+import { useEffect } from 'react';
+import { getItem, populateAsyncStorage } from 'libs/AsyncStorage';
 
-export default function App() {
+export function AppProvider(){
+  const dispatch = useAppDispatch();
+  const isDarkTheme = useAppSelector(state => state.isDark.isDark);
+  const theme = isDarkTheme ? CombinedDarkTheme : CombinedDefaultTheme;
+
+  useEffect(() => {
+    async function initialization(){
+      await populateAsyncStorage();
+    }
+  });
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <SafeAreaProvider>
+      <PaperProvider theme={theme}>
+        <NavigationContainer 
+          theme={theme} 
+          documentTitle={{
+            formatter: () => "All You Can Shop",
+          }}
+        >
+          <Screens />
+        </NavigationContainer>
+      </PaperProvider>
+    </SafeAreaProvider>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default function ReduxWrapper(){
+  return (
+    <Provider store={store}>
+      <AppProvider />
+    </Provider>
+  );
+}
