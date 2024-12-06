@@ -1,20 +1,61 @@
+import { PaperProvider, Text } from 'react-native-paper';
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { CombinedDarkTheme, CombinedDefaultTheme, customFonts } from './themeConfig';
+import { Screens } from './Screens';
+import { NavigationContainer } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { useFonts } from 'expo-font';
+import { populateAsyncStorage } from './libs/AsyncStorage';
+import { useEffect } from 'react';
 
-export default function App() {
+function App() {
+  const isDarkTheme = true;
+  const theme = isDarkTheme ? CombinedDarkTheme : CombinedDefaultTheme;
+  const [fontsLoaded] = useFonts({
+    "poppins-thin": require("./assets/fonts/Poppins_100Thin.ttf"),
+    "poppins-extra-light": require("./assets/fonts/Poppins_200ExtraLight.ttf"),
+    "poppins-light": require("./assets/fonts/Poppins_300Light.ttf"),
+    "poppins-regular": require("./assets/fonts/Poppins_400Regular.ttf"),
+    "poppins-medium": require("./assets/fonts/Poppins_500Medium.ttf"),
+    "poppins-semi-bold": require("./assets/fonts/Poppins_600SemiBold.ttf"),
+    "poppins-bold": require("./assets/fonts/Poppins_700Bold.ttf"),
+    "poppins-extra-bold": require("./assets/fonts/Poppins_800ExtraBold.ttf"),
+    "poppins-black": require("./assets/fonts/Poppins_900Black.ttf"),
+  });
+
+  useEffect(() => {
+    async function initialization(){
+      await populateAsyncStorage();
+    }
+
+    initialization();
+  });
+
+  if(!fontsLoaded)
+    return <Text>Loading...</Text>;
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <SafeAreaProvider>
+      <PaperProvider theme={theme as any}>
+        <NavigationContainer
+          theme={{
+            ...theme,
+            fonts: customFonts
+          }}
+          documentTitle={{
+            formatter: () => "All You Can Shop"
+          }}
+        >
+          <StatusBar />
+          <Screens />
+        </NavigationContainer>
+      </PaperProvider>
+    </SafeAreaProvider>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default function ReduxWrapper(){
+  return (
+    <App />
+  );
+}
