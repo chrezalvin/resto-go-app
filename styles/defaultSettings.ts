@@ -29,6 +29,8 @@ export const colors = {
     theme: "#21242c",
     muted: "#9ea0a3",
     success: "#5cb85c",
+    danger: "#d9534f",
+    warning: "#f0ad4e",
 } as const;
 
 // export const darkTheme: Theme = {

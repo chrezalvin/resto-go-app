@@ -7,9 +7,12 @@ import { StatusBar } from 'expo-status-bar';
 import { useFonts } from 'expo-font';
 import { populateAsyncStorage } from './libs/AsyncStorage';
 import { useEffect } from 'react';
+import { store, useAppDispatch, useAppSelector } from './state';
+import { Provider } from 'react-redux';
 
 function App() {
-  const isDarkTheme = true;
+  const dispatch = useAppDispatch();
+  const isDarkTheme = useAppSelector(state => state.isDark.isDark);
   const theme = isDarkTheme ? CombinedDarkTheme : CombinedDefaultTheme;
   const [fontsLoaded] = useFonts({
     "poppins-thin": require("./assets/fonts/Poppins_100Thin.ttf"),
@@ -56,6 +59,8 @@ function App() {
 
 export default function ReduxWrapper(){
   return (
-    <App />
+    <Provider store={store}>
+      <App />
+    </Provider>
   );
 }

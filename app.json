@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "resto-go-testing",
-    "slug": "resto-go-testing",
+    "name": "Resto Go",
+    "slug": "resto-go",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -9,7 +9,7 @@
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#892B1B"
     },
     "ios": {
       "supportsTablet": true
@@ -26,6 +26,12 @@
     },
     "plugins": [
       "expo-font"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "ecb366b2-d973-49fe-a928-6be4f513b7f2"
+      }
+    },
+    "owner": "chrealvin"
   }
 }

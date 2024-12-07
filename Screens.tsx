@@ -9,7 +9,7 @@ export function Screens(){
     const rnpTheme = useTheme();
 
     return (
-      <SafeAreaView 
+      <SafeAreaView
         mode="padding"
         edges={["bottom", "left", "right", "top"]}
         style={{
@@ -18,7 +18,7 @@ export function Screens(){
         }}
       >
         <Stack.Navigator initialRouteName={routeList.QrScanner}>
-        {
+          {
             pagesList.map((page) => 
               <Stack.Screen 
                 key={page.name} 

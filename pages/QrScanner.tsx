@@ -69,6 +69,8 @@ export function QrScanner(props: QrScannerProps){
 
             if(userData)
                 await setItem("customer_id", userData.customer_id);
+
+            props.navigation.navigate(routeList.foodWaiting);
         }
         catch(e){
             console.log(`error: ${e}`);
@@ -176,6 +178,11 @@ export function QrScanner(props: QrScannerProps){
                         )
                     }
                 </View>
+
+                <Text style={[styles.textWarning, styles.fwBold]} variant="labelLarge">
+                    {error ?? ""}
+                </Text>
+
                 {
                     isLoading && (
                         <View style={[

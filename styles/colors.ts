@@ -11,6 +11,12 @@ export const colorStyle = StyleSheet.create({
     textLight: {
       color: colors.light,
     },
+    textDanger: {
+      color: colors.danger,
+    },
+    textWarning: {
+      color: colors.warning,
+    },
     textMuted: {
       color: colors.muted,
     },
@@ -26,6 +32,12 @@ export const colorStyle = StyleSheet.create({
     bgLight: {
       backgroundColor: colors.light,
     },
+    bgDanger: {
+      backgroundColor: colors.danger,
+    },
+    bgWarning: {
+      backgroundColor: colors.warning,
+    },
     bgMuted: {
       backgroundColor: colors.muted,
     },
@@ -40,6 +52,12 @@ export const colorStyle = StyleSheet.create({
     },
     borderLight: {
       borderColor: colors.light,
+    },
+    borderDanger: {
+      borderColor: colors.danger,
+    },
+    borderWarning: {
+      borderColor: colors.warning,
     },
     borderMuted: {
       borderColor: colors.muted,
