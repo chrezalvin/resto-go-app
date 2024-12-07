@@ -17,7 +17,7 @@ export function Screens(){
           backgroundColor: rnpTheme.colors.background,
         }}
       >
-        <Stack.Navigator initialRouteName={routeList.QrScanner}>
+        <Stack.Navigator initialRouteName={routeList.checkout}>
           {
             pagesList.map((page) => 
               <Stack.Screen 

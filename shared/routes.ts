@@ -5,6 +5,7 @@ export const routeList = {
     checkout: "checkout",
     foodWaiting: "foodWaiting",
     happyEating: "happyEating",
+    paymentVerification: "paymentVerification",
 } as const;
 
 export type RouteStackParamList = {
@@ -14,4 +15,5 @@ export type RouteStackParamList = {
     [routeList.checkout]: undefined;
     [routeList.foodWaiting]: undefined;
     [routeList.happyEating]: undefined;
+    [routeList.paymentVerification]: undefined; // Add this line
 };
