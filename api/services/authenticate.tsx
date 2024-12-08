@@ -16,3 +16,15 @@ export async function authenticate(seat_id: number, long: number, lat: number): 
     if(isCustomer(data))
         return data;
 }
+
+export async function getProfile(): Promise<Customer | undefined>{
+    const res = await axiosInstance.get("/profile");
+
+    if(res.status !== 200)
+        throw new Error(`Error: ${res.data}`);
+
+    const data = res.data as unknown;
+
+    if(isCustomer(data))
+        return data;    
+}

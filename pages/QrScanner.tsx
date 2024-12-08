@@ -4,7 +4,7 @@ import { routeList, RouteStackParamList } from "../shared";
 import styles from "../styles";
 import { BarcodeScanningResult, CameraView, useCameraPermissions } from "expo-camera";
 import { getCurrentPositionAsync, requestForegroundPermissionsAsync } from "expo-location";
-import { setItem } from "../libs/AsyncStorage";
+import { getItem, setItem } from "../libs/AsyncStorage";
 import { useState, useEffect } from "react";
 import { View } from "react-native";
 import { ActivityIndicator, Button, Text } from "react-native-paper";
@@ -49,6 +49,21 @@ export function QrScanner(props: QrScannerProps){
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
+    async function checkIfUserIsAuthenticated(): Promise<boolean>{
+        // await setItem("customer_id", "65fb14ef-d7da-4317-8396-93207e584997")
+        const customer_id = await getItem("customer_id");
+
+        if(customer_id !== null){
+            console.log("user is already authenticated");
+            console.log(`customer_id: ${customer_id}`);
+            props.navigation.replace(routeList.pickFood);
+
+            return true;
+        }
+
+        return false;
+    }
+
     async function onBarcodeScanned(data: BarcodeScanningResult){
         console.log("barcode scanned!");
         setIsLoading(true);
@@ -67,10 +82,13 @@ export function QrScanner(props: QrScannerProps){
 
             const userData = await authenticate(barcodeData.seat_id, barcodeData.long, barcodeData.lat);
 
-            if(userData)
+            if(userData){
+                console.log("setting up user data to the storage");
+                console.log(`user data: ${userData.customer_id}`);
                 await setItem("customer_id", userData.customer_id);
+            }
 
-            props.navigation.navigate(routeList.foodWaiting);
+            props.navigation.replace(routeList.pickFood);
         }
         catch(e){
             console.log(`error: ${e}`);
@@ -120,8 +138,13 @@ export function QrScanner(props: QrScannerProps){
     // checks both permissions
     useEffect(() => {
         async function checkPermissions(){
-            await getLocation();
-            await requestCamera();
+
+            const isUserAuthenticated = await checkIfUserIsAuthenticated();
+
+            if(!isUserAuthenticated){
+                await getLocation();
+                await requestCamera();
+            }
         }
 
         checkPermissions();

@@ -1,0 +1,4 @@
+{
+    "BASE_URL": "https://resto-go-api-apps.onrender.com",
+    "AXIOS_TIMEOUT": 100000
+}

@@ -14,7 +14,7 @@ export async function populateAsyncStorage(): Promise<void> {
     for(const key in initialAsyncStorageItem){
         const data = await getItem(key as keyof AsyncStorageItem);
 
-        if(data === null){
+        if(data === null && initialAsyncStorageItem[key as keyof AsyncStorageItem] !== null){
             await setItem(key as keyof AsyncStorageItem, initialAsyncStorageItem[key as keyof AsyncStorageItem]);
         }
     }
@@ -43,6 +43,9 @@ function isJson(item: unknown): boolean {
  */
 export async function setItem<_T extends keyof AsyncStorageItem>(key: _T, value: AsyncStorageItem[_T]): Promise<void> {
     try {
+        if(value === null)
+            return await AsyncStorage.removeItem(key);
+
         let data: string;
 
         switch(typeof value){
@@ -70,6 +73,15 @@ export async function setItem<_T extends keyof AsyncStorageItem>(key: _T, value:
 }
 
 /**
+ * checks whether the input is an integer, used to anticipate uuid type data
+ * @param data input
+ * @returns 
+ */
+function isInteger(data: string): boolean {
+    return typeof data === 'string' && /^[+-]?\d+$/.test(data);
+}
+
+/**
  * gets an item from the AsyncStorage
  * @param key the key of the item
  * @returns the item stored in the AsyncStorage
@@ -77,22 +89,26 @@ export async function setItem<_T extends keyof AsyncStorageItem>(key: _T, value:
 export async function getItem<_T extends keyof AsyncStorageItem>(key: _T): Promise<AsyncStorageItem[_T] | null> {
     try {
         const data = await AsyncStorage.getItem(key);
-
+        console.log(`getting data from async storage with key: ${key}, data: ${data}`);
         
         if(data === null)
             return null;
-        
-        if(!isNaN(parseInt(data))){
-            return parseInt(data) as any;
+        if(isInteger(data)){
+            if(!isNaN(parseInt(data))){
+                console.log(`this data is int, ${parseInt(data)}`);
+                return parseInt(data) as any;
+            }
         }
         
         if(data === "true" || data === "false"){
-            return (data === "true") as any;
+            return (data === "true") as AsyncStorageItem[_T];
         }
 
         if(isJson(data)){
             return JSON.parse(data);
         }
+
+        return data as AsyncStorageItem[_T];
     }
     catch(e){
         console.error(e);

@@ -2,6 +2,7 @@ import { Food, isFood } from "../models";
 import axiosInstance from "../../shared/axios";
 
 export async function getFoodList(): Promise<Food[]>{
+    console.log("getting food list");
     const res = await axiosInstance.get("/food");
 
     if(res.status === 200){

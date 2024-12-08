@@ -1,23 +1,29 @@
 import axios from "axios";
 import { getItem } from "../libs/AsyncStorage";
 
+const config = require("../appConfig.json");
+
 export const axiosInstance = axios.create({
-    baseURL: process.env.BASE_URL,
-    timeout: process.env.AXIOS_TIMEOUT,
+    baseURL: config.BASE_URL,
+    timeout: config.AXIOS_TIMEOUT,
+    validateStatus: () => true,
 });
 
 // add an intercepter before every request to check if the user is authenticated, then add the token to the header
 axiosInstance
     .interceptors
     .request
-    .use((config) => {
+    .use(async (config) => {
         console.log("getting token from local storage");
 
-        const token = getItem("customer_id");
+        if(config.url === "/authenticate")
+            return config;
+
+        const token = await getItem("customer_id");
 
         if(token){
             console.log(`token found: ${token}`);
-            config.headers.SESSION_ID = token;
+            config.headers.CUSTOMER_ID = token;
         }
         else
             console.log("token not found");
