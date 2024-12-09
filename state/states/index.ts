@@ -1,5 +1,6 @@
 import isDarkConnector from "./isDark";
 import cookiesConnector from "./cookies";
+import cartConnector from "./cart";
 
 export {
     toggle,
@@ -11,9 +12,16 @@ export {
     resetCustomer,
 } from "./cookies";
 
+export {
+    addCartItem,
+    removeCartItem,
+    clearCart,
+} from "./cart";
+
 export const reducer = {
     isDark: isDarkConnector,
     cookies: cookiesConnector,
+    cart: cartConnector,
 };
 
 export default reducer;

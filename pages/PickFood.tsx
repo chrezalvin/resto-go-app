@@ -1,7 +1,7 @@
 import { PageIndex } from "../libs";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { NativeStackHeaderProps, NativeStackScreenProps } from "@react-navigation/native-stack";
 import { routeList, RouteStackParamList } from "../shared";
-import { View, ScrollView, TouchableOpacity, Image, ActivityIndicator, RefreshControl } from 'react-native';
+import { View, ScrollView, TouchableOpacity, Image, ActivityIndicator, RefreshControl, Alert } from 'react-native';
 import { Text } from "react-native-paper";
 import MenuCard from '../components/MenuCard';
 import CheckoutButton from '../components/MiniComponent/CheckoutButtonComponent'; // Komponen untuk tombol checkout
@@ -11,6 +11,8 @@ import { setItem } from "../libs/AsyncStorage";
 import { getFoodList } from "../api/services/getFood";
 import { getProfile } from "../api/services/authenticate";
 import { Food } from "../api/models";
+import BackButton from "../components/BackButton";
+import { addCartItem, clearCart, removeCartItem, useAppDispatch, useAppSelector } from "../state";
 
 const routeName = routeList.pickFood;
 type PickFoodProps = NativeStackScreenProps<RouteStackParamList, typeof routeName>;
@@ -22,12 +24,14 @@ const categories = [
 ];
 
 export function PickFood(props: PickFoodProps){
+    const dispatch = useAppDispatch();
+    const cart = useAppSelector(state => state.cart.cart);
+    const totalItems = useAppSelector(state => state.cart.countItems);
+
     const [selectedCategory, setSelectedCategory] = useState('Food');
 
     const [foodItems, setFoodItems] = useState<Food[]>([]);
-    const [cart2, setCart2] = useState<{[key: number]: number}>({});
 
-    const [totalItems, setTotalItems] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -37,7 +41,7 @@ export function PickFood(props: PickFoodProps){
     const otherRef = useRef<View>(null);
 
     async function loadMenu(){
-        setCart2({});
+        dispatch(clearCart());
         setIsLoading(true);
         setError(null);
 
@@ -68,8 +72,6 @@ export function PickFood(props: PickFoodProps){
         default: ref = foodRef;
       };
 
-      const a = scrollViewRef.current!;
-
       if(ref.current && scrollViewRef.current){
         ref.current.measureLayout(
           // casting because it's not an error somehow
@@ -93,24 +95,6 @@ export function PickFood(props: PickFoodProps){
     const drinkMenu = foodItems.filter(item => item.category === 'drink');
     const otherMenu = foodItems.filter(item => item.category === 'other');
 
-    const handleUpdateQuantity2 = (id: number, action: "increase" | "decrease") => {
-      const newCart = {...cart2};
-
-      if(action === "increase"){
-        setTotalItems(totalItems + 1);
-        newCart[id] = (newCart[id] ?? 0) + 1;
-      }
-      else{
-        setTotalItems(totalItems - 1);
-        if(newCart[id] === 1)
-          delete newCart[id];
-        else
-          newCart[id] -= 1;
-      }
-
-      setCart2(newCart);
-    }
-
     const menuDisplayUI = (foodList: Food[]) => {
       return foodList.map((food) => (
         <MenuCard
@@ -119,9 +103,9 @@ export function PickFood(props: PickFoodProps){
           description={food.food_desc}
           price={`Rp. ${food.price.toLocaleString()}`}
           imageUrl={food.img_path ?? ""}
-          cartQuantity={cart2[food.food_id] ?? 0}
-          onAddToCart={() => handleUpdateQuantity2(food.food_id, "increase")}
-          onUpdateQuantity={(_, action) => handleUpdateQuantity2(food.food_id, action)}
+          cartQuantity={cart[food.food_id] ?? 0}
+          onAddToCart={() => dispatch(addCartItem(food.food_id))}
+          onUpdateQuantity={(_, action) => dispatch(action === "increase" ? addCartItem(food.food_id) : removeCartItem(food.food_id))}
       />
       ));
     }
@@ -183,7 +167,7 @@ export function PickFood(props: PickFoodProps){
           refreshControl={
             <RefreshControl 
               refreshing={isLoading} 
-              onRefresh={() => loadMenu()}
+              onRefresh={loadMenu}
             />
           }
           ref={scrollViewRef}
@@ -283,9 +267,10 @@ export function PickFood(props: PickFoodProps){
     );
 }
 
-function Header(){
+function Header(props: NativeStackHeaderProps){
     const [address, setAddress] = useState<string | null>();
-    const [tableNumber, setTableNumber] = useState<string | null>();
+    const [tableNumber, setTableNumber] = useState<number | null>();
+    const [branchName, setBranchName] = useState<string | null>();
     const [isLoading, setIsLoading] = useState(false);
 
     async function loadProfile(){
@@ -293,8 +278,13 @@ function Header(){
 
         try{
           const profile = await getProfile();
-          // setAddress(profile.);
-          // setTableNumber(profile.table_number);
+          console.log(profile);
+
+          if(profile){
+            setAddress(profile.branch.address);
+            setTableNumber(profile.seat.seat_no);
+            setBranchName(profile.branch.branch_name);
+          }
         }
         catch(e){
           console.log(e);
@@ -305,19 +295,50 @@ function Header(){
     }
 
     useEffect(() => {
-        getProfile();
+      loadProfile();
     }, [])
 
     return (
         <View style={[
-            {
-                height: 30, 
-            },
             styles.flexHorizontal,
             styles.gap3,
+            styles.alignItemsCenter,
+            styles.mx3,
         ]}>
-            <Text>Back</Text>
-            <Text>Pick Food</Text>
+            <BackButton 
+              onBack={() => {
+                Alert.alert(
+                  "Logout?",
+                  "Are you sure you want to logout?\nAll your cart items will be removed",
+                  [
+                    {
+                      text: "Logout",
+                      onPress: () => {
+                        setItem("customer_id", null);
+                        props.navigation.replace(routeList.QrScanner);
+                      },
+                    },
+                    {
+                      text: "Cancel",
+                      style: "cancel",
+                    }
+                  ]
+                );
+              }}
+            />
+            <View
+              style={[
+                styles.mr3
+              ]}
+            >
+              <Text
+                variant="bodyMedium"
+                style={[
+                  styles.textLight,
+                  styles.fwBold,
+                ]}
+              >Seat No. {tableNumber} | {branchName} | {address}</Text>
+            </View>
         </View>    
     );
 }

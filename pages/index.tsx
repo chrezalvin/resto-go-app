@@ -5,6 +5,7 @@ import FoodWaiting from "./FoodWaiting";
 import Checkout from "./Checkout";
 import foodDetail from "./FoodDetail";
 import HappyEating from "./HappyEating";
+import qrCashPayment from "./QrCashPayment";
 
 export const pagesList: PageIndex<any>[] = [
     PickFood,
@@ -13,6 +14,7 @@ export const pagesList: PageIndex<any>[] = [
     Checkout,
     foodDetail,
     HappyEating,
+    qrCashPayment,
 ];
 
 export default pagesList;

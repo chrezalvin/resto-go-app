@@ -1,5 +1,6 @@
-import { Customer, isCustomer } from "../models";
+import { Branch, Customer, isCustomer, isTransaction, Transaction } from "../models";
 import axiosInstance from "../../shared/axios";
+import { isProfile, Profile } from "../models/Profile";
 
 export async function authenticate(seat_id: number, long: number, lat: number): Promise<Customer | undefined>{
     const res = await axiosInstance.post("/authenticate", {
@@ -17,7 +18,7 @@ export async function authenticate(seat_id: number, long: number, lat: number): 
         return data;
 }
 
-export async function getProfile(): Promise<Customer | undefined>{
+export async function getProfile(): Promise<Profile | undefined>{
     const res = await axiosInstance.get("/profile");
 
     if(res.status !== 200)
@@ -25,6 +26,6 @@ export async function getProfile(): Promise<Customer | undefined>{
 
     const data = res.data as unknown;
 
-    if(isCustomer(data))
+    if(isProfile(data))
         return data;    
 }

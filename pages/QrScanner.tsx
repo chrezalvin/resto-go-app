@@ -9,7 +9,7 @@ import { useState, useEffect } from "react";
 import { View } from "react-native";
 import { ActivityIndicator, Button, Text } from "react-native-paper";
 import {impactAsync, ImpactFeedbackStyle} from "expo-haptics";
-import { authenticate } from "../api/services/authenticate";
+import { authenticate, getProfile } from "../api/services/authenticate";
 import colors from "../styles/defaultSettings";
 
 const routeName = routeList.QrScanner;
@@ -52,13 +52,22 @@ export function QrScanner(props: QrScannerProps){
     async function checkIfUserIsAuthenticated(): Promise<boolean>{
         // await setItem("customer_id", "65fb14ef-d7da-4317-8396-93207e584997")
         const customer_id = await getItem("customer_id");
-
+        
         if(customer_id !== null){
-            console.log("user is already authenticated");
-            console.log(`customer_id: ${customer_id}`);
-            props.navigation.replace(routeList.pickFood);
+            const profile = await getProfile();
+            if(profile){
+                console.log("user is already authenticated");
+                console.log(`customer_id: ${customer_id}`);
 
-            return true;
+                if(profile.transaction)
+                    props.navigation.replace(routeList.foodWaiting);
+                else
+                    props.navigation.replace(routeList.pickFood);
+    
+                return true;
+            }
+            else
+                await setItem("customer_id", null);
         }
 
         return false;
