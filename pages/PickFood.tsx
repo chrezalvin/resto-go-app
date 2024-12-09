@@ -9,7 +9,7 @@ import { useEffect, useRef, useState } from "react";
 import styles from "../styles";
 import { setItem } from "../libs/AsyncStorage";
 import { getFoodList } from "../api/services/getFood";
-import { getProfile } from "../api/services/authenticate";
+import { getProfile, logout } from "../api/services/authenticate";
 import { Food } from "../api/models";
 import BackButton from "../components/BackButton";
 import { addCartItem, clearCart, removeCartItem, useAppDispatch, useAppSelector } from "../state";
@@ -313,8 +313,9 @@ function Header(props: NativeStackHeaderProps){
                   [
                     {
                       text: "Logout",
-                      onPress: () => {
-                        setItem("customer_id", null);
+                      onPress: async () => {
+                        await logout();
+                        await setItem("customer_id", null);
                         props.navigation.replace(routeList.QrScanner);
                       },
                     },

@@ -14,6 +14,7 @@ axiosInstance
     .interceptors
     .request
     .use(async (config) => {
+        console.log(`accessing ${config.url}`);
         console.log("getting token from local storage");
 
         if(config.url === "/authenticate")

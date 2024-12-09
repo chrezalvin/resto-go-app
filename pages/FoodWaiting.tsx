@@ -30,6 +30,9 @@ export function FoodWaiting(props: FoodWaitingProps){
                 throw new Error("Transaction not found");
             }
 
+            if(profile.transaction.finished)
+                props.navigation.replace(routeList.foodFinished);
+
             setEta(profile.transaction.eta);
         }
         catch(e){
@@ -57,6 +60,11 @@ export function FoodWaiting(props: FoodWaitingProps){
 
     useEffect(() => {
         loadEta();
+
+        // reload every 1 minute
+        setInterval(() => {
+            loadEta();
+        }, 60000);
     }, []);
 
     useEffect(() => {

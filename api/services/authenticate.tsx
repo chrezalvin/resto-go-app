@@ -29,3 +29,12 @@ export async function getProfile(): Promise<Profile | undefined>{
     if(isProfile(data))
         return data;    
 }
+
+export async function logout(): Promise<void>{
+    const res = await axiosInstance.get("/logout");
+
+    if(res.status !== 200)
+        throw new Error(`Error: ${res.data}`);
+
+    return;
+}

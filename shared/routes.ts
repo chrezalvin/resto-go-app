@@ -6,6 +6,7 @@ export const routeList = {
     foodWaiting: "foodWaiting",
     happyEating: "happyEating",
     qrCashPayment: "qrCashPayment",
+    foodFinished: "foodFinished",
     
     // Cashier pages
     cashierhome: "cashierhome",
@@ -25,6 +26,7 @@ export type RouteStackParamList = {
     [routeList.foodWaiting]: undefined;
     [routeList.happyEating]: undefined;
     [routeList.qrCashPayment]: undefined;
+    [routeList.foodFinished]: undefined;
 
     // Cashier pages
     [routeList.cashierhome]: undefined;
