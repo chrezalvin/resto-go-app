@@ -1,6 +1,8 @@
-import axiosInstance from "../../shared/axios";
+import axios from "axios";
+import axiosInstance, { axiosCashierInstance } from "../../shared/axios";
 import { CheckoutResponse, isCheckoutResponse } from "../models/CheckoutResponse";
 import { FoodList } from "../models/FoodList";
+import { isTransaction, Transaction } from "../models";
 
 export async function transaction_checkout(foodList: FoodList[]): Promise<{foodsWithPrice: CheckoutResponse[], totalPrice: number}>{
     const res = await axiosInstance.post("/transaction/checkout", foodList);
@@ -22,5 +24,18 @@ export async function transaction_checkout(foodList: FoodList[]): Promise<{foods
         throw new Error("Invalid response");
 
     
+    return res.data;
+}
+
+export async function transaction_cash_confirm(transaction_data: {
+    customer_id: string,
+    note: string,
+    food_list: FoodList[],
+}): Promise<Transaction>{
+    const res = await axiosCashierInstance.post("/payment/cash/confirm", transaction_data);
+
+    if(!isTransaction(res.data))
+        throw new Error("Invalid response");
+
     return res.data;
 }

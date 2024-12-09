@@ -16,6 +16,7 @@ export {
     addCartItem,
     removeCartItem,
     clearCart,
+    setCart,
 } from "./cart";
 
 export const reducer = {

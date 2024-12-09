@@ -6,6 +6,15 @@ export const routeList = {
     foodWaiting: "foodWaiting",
     happyEating: "happyEating",
     qrCashPayment: "qrCashPayment",
+    
+    // Cashier pages
+    cashierhome: "cashierhome",
+    cashierBarcodeScanner: "cashierBarcodeScanner",
+    cashierConfirmPayment: "cashierConfirmPayment",
+
+    // Chef pages
+    chefhome: "chefhome",
+    chefOrderDetail: "chefOrderDetail",
 } as const;
 
 export type RouteStackParamList = {
@@ -16,4 +25,13 @@ export type RouteStackParamList = {
     [routeList.foodWaiting]: undefined;
     [routeList.happyEating]: undefined;
     [routeList.qrCashPayment]: undefined;
+
+    // Cashier pages
+    [routeList.cashierhome]: undefined;
+    [routeList.cashierBarcodeScanner]: undefined;
+    [routeList.cashierConfirmPayment]: undefined;
+
+    // Chef pages
+    [routeList.chefhome]: undefined;
+    [routeList.chefOrderDetail]: undefined;
 };

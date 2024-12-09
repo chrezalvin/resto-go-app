@@ -31,4 +31,10 @@ axiosInstance
         return config;
     });
 
+export const axiosCashierInstance = axios.create({
+    baseURL: config.BASE_URL,
+    timeout: config.AXIOS_TIMEOUT,
+    validateStatus: () => true,
+});
+
 export default axiosInstance;

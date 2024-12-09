@@ -50,27 +50,40 @@ export function QrScanner(props: QrScannerProps){
     const [error, setError] = useState<string | null>(null);
 
     async function checkIfUserIsAuthenticated(): Promise<boolean>{
-        // await setItem("customer_id", "65fb14ef-d7da-4317-8396-93207e584997")
-        const customer_id = await getItem("customer_id");
-        
-        if(customer_id !== null){
-            const profile = await getProfile();
-            if(profile){
-                console.log("user is already authenticated");
-                console.log(`customer_id: ${customer_id}`);
+        // await setItem("customer_id", "e492cc79-3a73-4b24-9703-b6b7ad15d29a")
 
-                if(profile.transaction)
-                    props.navigation.replace(routeList.foodWaiting);
-                else
-                    props.navigation.replace(routeList.pickFood);
+        try{
+            console.log("checking if user is authenticated");
+            const customer_id = await getItem("customer_id");
+            
+            if(customer_id !== null){
+                console.log("customer_id found in the storage, getting profile");
+                const profile = await getProfile();
+                console.log(`obtained profile: ${JSON.stringify(profile)}`);    
     
-                return true;
+                if(profile){
+                    console.log("user is already authenticated");
+                    console.log(`customer_id: ${customer_id}`);
+    
+                    if(profile.transaction)
+                        props.navigation.replace(routeList.foodWaiting);
+                    else
+                        props.navigation.replace(routeList.pickFood);
+        
+                    return true;
+                }
+                else
+                    await setItem("customer_id", null);
             }
-            else
-                await setItem("customer_id", null);
-        }
 
-        return false;
+            return false;
+        }
+        catch(e){
+            console.log(`error: ${e}`);
+            await setItem("customer_id", null);
+
+            return false;
+        }
     }
 
     async function onBarcodeScanned(data: BarcodeScanningResult){
@@ -151,6 +164,8 @@ export function QrScanner(props: QrScannerProps){
             const isUserAuthenticated = await checkIfUserIsAuthenticated();
 
             if(!isUserAuthenticated){
+                console.log("user is not authenticated");
+
                 await getLocation();
                 await requestCamera();
             }
