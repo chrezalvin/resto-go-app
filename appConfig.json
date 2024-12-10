@@ -1,4 +1,6 @@
 {
-    "BASE_URL": "https://resto-go-api-apps.onrender.com",
+    "BASE_URL": "https://crude-analyze-por-passing.trycloudflare.com/",
+    "WEBSOCKET_URL": "wss://warcraft-turner-bl-loc.trycloudflare.com/",
+    "AXIOS_ADMIN_JWT_TOKEN": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MX0.9YorkHqOyAC0d-FgNeYmgt11ydEiCHtdABWxHVXLiq0",
     "AXIOS_TIMEOUT": 100000
 }

@@ -13,7 +13,7 @@ import { setItem } from "../libs/AsyncStorage";
 import { getProfile } from "../api/services/authenticate";
 
 const routeName = routeList.cashierBarcodeScanner;
-type FoodDetailProps = NativeStackScreenProps<RouteStackParamList, typeof routeName>;
+type CashierDetailProps = NativeStackScreenProps<RouteStackParamList, typeof routeName>;
 
 interface CashBarcodeData {
     customer_id: string;
@@ -40,7 +40,7 @@ function isCashBarcodeData(data: unknown): data is CashBarcodeData{
     return true;
 }
 
-export function CashierBarcodeScanner(props: FoodDetailProps){
+export function CashierBarcodeScanner(props: CashierDetailProps){
     const dispatch = useAppDispatch();
 
     const [isLoading, setIsLoading] = useState<boolean>(false);

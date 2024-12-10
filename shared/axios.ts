@@ -35,6 +35,9 @@ axiosInstance
 export const axiosCashierInstance = axios.create({
     baseURL: config.BASE_URL,
     timeout: config.AXIOS_TIMEOUT,
+    headers: {
+        Authorization: config.AXIOS_ADMIN_JWT_TOKEN
+    },
     validateStatus: () => true,
 });
 

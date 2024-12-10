@@ -12,6 +12,8 @@ import CashierHome from "./CashierHome";
 import CashierBarcodeScanner from "./CashierBarcodeScanner";
 import CashierConfirmPayment from "./CashierConfirmPayment";
 
+import ChefMenu from "./ChefMenu";
+
 export const pagesList: PageIndex<any>[] = [
     PickFood,
     QrScanner,
@@ -25,6 +27,8 @@ export const pagesList: PageIndex<any>[] = [
     CashierHome,
     CashierBarcodeScanner,
     CashierConfirmPayment,
+
+    ChefMenu,
 ];
 
 export default pagesList;

@@ -8,7 +8,7 @@ import colors from "../styles/defaultSettings";
 import { logout } from "../api/services/authenticate";
 import { useEffect, useState } from "react";
 import { setItem } from "../libs/AsyncStorage";
-import { useAudioPlayer } from "expo-audio";
+import { Audio, AVPlaybackSource } from "expo-av";
 
 const dingAudio = require("../assets/audios/ding.mp3");
 
@@ -18,8 +18,25 @@ type FoodDetailProps = NativeStackScreenProps<RouteStackParamList, typeof routeN
 export function FoodFinished(props: FoodDetailProps){
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
+    const [sound, setSound] = useState<Audio.Sound>();
 
-    const dingAudioPlayer = useAudioPlayer(dingAudio);
+    async function playSound(audioSource: AVPlaybackSource){
+      console.log('Loading Sound');
+      const { sound } = await Audio.Sound.createAsync(audioSource);
+      setSound(sound);
+  
+      console.log('Playing Sound');
+      await sound.playAsync();
+    }
+  
+    useEffect(() => {
+      return sound
+        ? () => {
+            console.log('Unloading Sound');
+            sound.unloadAsync();
+          }
+        : undefined;
+    }, [sound]);
 
     async function onGoBack(){
         setIsLoading(true);
@@ -42,7 +59,7 @@ export function FoodFinished(props: FoodDetailProps){
     }
 
     useEffect(() => {
-        dingAudioPlayer.play();
+        Audio.Sound.createAsync(dingAudio);
     }, []);
 
     return (

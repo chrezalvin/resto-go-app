@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { View, ScrollView, Image, Animated, Easing, Dimensions, Touchable, TouchableOpacity, ImageSourcePropType } from 'react-native';
-import { Text, Button, Card, Modal, Portal, Divider } from 'react-native-paper';
+import React, { useState, useEffect } from 'react';
+import { View, ScrollView } from 'react-native';
+import { Text, Button, Card, Divider } from 'react-native-paper';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { routeList, RouteStackParamList } from '../shared';
 import styles from '../styles';
@@ -13,15 +13,10 @@ import colors from '../styles/defaultSettings';
 import { PageIndex } from '../libs';
 import { getItem, setItem } from '../libs/AsyncStorage';
 
-// Import images
-const cashImage = require('../assets/images/Cash.png');
-const debitImage = require('../assets/images/Debit.png');
-const qrisImage = require('../assets/images/QR.png');
-
 const routeName = routeList.cashierConfirmPayment;
-type CheckoutProps = NativeStackScreenProps<RouteStackParamList, typeof routeName>;
+type CashierConfirmPaymentProps = NativeStackScreenProps<RouteStackParamList, typeof routeName>;
 
-export function CashierConfirmPayment({ navigation }: CheckoutProps) {
+export function CashierConfirmPayment({ navigation }: CashierConfirmPaymentProps) {
     const dispatch = useAppDispatch();
     const cart = useAppSelector(state => state.cart.cart);
 
