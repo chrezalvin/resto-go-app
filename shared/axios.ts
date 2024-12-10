@@ -36,9 +36,18 @@ export const axiosCashierInstance = axios.create({
     baseURL: config.BASE_URL,
     timeout: config.AXIOS_TIMEOUT,
     headers: {
-        Authorization: config.AXIOS_ADMIN_JWT_TOKEN
+        authorization: config.AXIOS_ADMIN_JWT_TOKEN
     },
     validateStatus: () => true,
 });
+
+axiosCashierInstance
+    .interceptors
+    .request
+    .use(async (config) => {
+        console.log(`accessing ${config.url}`);
+
+        return config;
+    });
 
 export default axiosInstance;

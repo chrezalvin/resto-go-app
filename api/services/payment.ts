@@ -39,3 +39,17 @@ export async function transaction_cash_confirm(transaction_data: {
 
     return res.data;
 }
+
+export async function finallizeTransaction(transaction_id: number): Promise<Transaction>{
+    const res = await axiosCashierInstance.get(`/chef/transaction/finallize/${transaction_id}`);
+
+    console.log(JSON.stringify(res.data));
+
+    if(res.status !== 200)
+        throw new Error(`Error: ${res.data}`);
+
+    if(!isTransaction(res.data))
+        throw new Error("Invalid response");
+
+    return res.data;
+}

@@ -1,5 +1,5 @@
 import { Food, isCustomer, isFood, isTransaction, Transaction } from "../models";
-import axiosInstance from "../../shared/axios";
+import axiosInstance, { axiosCashierInstance } from "../../shared/axios";
 import { CustomerView, isCustomerView } from "../models/CustomerView";
 import { isTransactionFoodDetail, TransactionFoodDetail } from "../models/TransactionFoodDetail";
 
@@ -16,6 +16,20 @@ export async function getFoodList(): Promise<Food[]>{
     }
 
     throw new Error("Invalid response");
+}
+
+export async function getFoodByBranch(branch_id: number): Promise<Food[]>{
+    const res = await axiosCashierInstance.get(`/food/branch/${branch_id}`);
+
+    if(res.status !== 200){
+        console.log(`invalid response, data: ${res.data}`); 
+        throw new Error("Invalid response");
+    }
+
+    if(!Array.isArray(res.data) || !res.data.every(isFood))
+        throw new Error("Invalid response");
+
+    return res.data;
 }
 
 export async function getFoodByTransaction(branch_id: number){
@@ -58,10 +72,13 @@ function isCustomerInBranchResponse(data: unknown): data is CustomerInBranchResp
 }
 
 export async function getCustomerInBranch(branch_id: number): Promise<CustomerInBranchResponse[]>{
-    const res = await axiosInstance.get(`/food/branch/${branch_id}`);
+    const res = await axiosCashierInstance.get(`/chef/transaction/branch/${branch_id}`);
+    console.log(JSON.stringify(res.data));
 
-    if(res.status !== 200)
+    if(res.status !== 200){
+        console.log(`invalid response, data: ${JSON.stringify(res.data)}`);
         throw new Error("Invalid response");
+    }
 
     if(!Array.isArray(res.data) || !res.data.every(isCustomerInBranchResponse))
         throw new Error("Invalid response");
