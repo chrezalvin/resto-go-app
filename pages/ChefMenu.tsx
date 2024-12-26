@@ -3,7 +3,6 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { routeList, RouteStackParamList } from "../shared";
 import { ActivityIndicator, RefreshControl, ScrollView, View } from "react-native";
 import { Button, Card, Text } from "react-native-paper";
-import config from "../appConfig.json";
 import { useEffect, useState } from "react";
 import { Audio, AVPlaybackSource } from "expo-av";
 import styles from "../styles";
@@ -13,6 +12,7 @@ import { Food, Transaction } from "../api/models";
 import { CustomerView } from "../api/models/CustomerView";
 import colors from "../styles/defaultSettings";
 import { finallizeTransaction } from "../api/services/payment";
+import { createChefWebSocket } from "../shared/websocket";
 
 const dingAudio = require("../assets/audios/ding.mp3");
 
@@ -123,18 +123,7 @@ export function ChefMenu(props: ChefMenuProps){
     }, [sound]);
 
     useEffect(() => {
-        const ws = new WebSocket(config.WEBSOCKET_URL);
-
-        const branchSocketData = JSON.stringify({
-            branch_id: 1,
-            subscription: "subscribe"
-        });
-
-        ws.onopen = () => {
-            console.log("connected, attempting to send data");
-
-            ws.send(branchSocketData);
-        };
+        const ws = createChefWebSocket();
         
         ws.onmessage = async (e) => {
             console.log(e.data);

@@ -106,7 +106,7 @@ export function PickFood(props: PickFoodProps){
           cartQuantity={cart[food.food_id] ?? 0}
           onAddToCart={() => dispatch(addCartItem(food.food_id))}
           onUpdateQuantity={(_, action) => dispatch(action === "increase" ? addCartItem(food.food_id) : removeCartItem(food.food_id))}
-      />
+        />
       ));
     }
   

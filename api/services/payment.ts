@@ -1,4 +1,3 @@
-import axios from "axios";
 import axiosInstance, { axiosCashierInstance } from "../../shared/axios";
 import { CheckoutResponse, isCheckoutResponse } from "../models/CheckoutResponse";
 import { FoodList } from "../models/FoodList";
@@ -47,6 +46,18 @@ export async function finallizeTransaction(transaction_id: number): Promise<Tran
 
     if(res.status !== 200)
         throw new Error(`Error: ${res.data}`);
+
+    if(!isTransaction(res.data))
+        throw new Error("Invalid response");
+
+    return res.data;
+}
+
+export async function createCashlessPayment(data: {note: string, food_list: FoodList[]}): Promise<Transaction>{
+    const res = await axiosInstance.post("/payment/qris/create", data);
+
+    if(res.status !== 200)
+        throw new Error("Invalid Cashless Payment!");
 
     if(!isTransaction(res.data))
         throw new Error("Invalid response");

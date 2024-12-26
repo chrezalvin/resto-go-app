@@ -10,9 +10,11 @@ import BackButton from "../components/BackButton";
 import { useAppSelector } from "../state";
 import { useEffect, useState } from "react";
 import { FoodList } from "../api/models/FoodList";
-import { getItem } from "../libs/AsyncStorage";
+import { getItem, setItem } from "../libs/AsyncStorage";
 import { getProfile } from "../api/services/authenticate";
 import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
+
+import { createCustomerWebSocket } from "../shared/websocket";
 
 const burgerLogo = require("../assets/images/burger_logo.png");
 
@@ -34,8 +36,14 @@ export function QrCashPayment(props: FoodDetailProps){
         try{
             const profile = await getProfile();
 
-            if(profile?.transaction)
+            if(profile?.transaction){
+                const transactionIds = await getItem("previous_transaction_id");
+
+                if(transactionIds)
+                    await setItem("previous_transaction_id", [...transactionIds, profile.transaction.transaction_id]);
+
                 props.navigation.replace(routeList.foodWaiting);
+            }
             else
                 setError("Transaction not found");
         }
@@ -79,6 +87,14 @@ export function QrCashPayment(props: FoodDetailProps){
     }
 
     useEffect(() => {
+        const ws = createCustomerWebSocket();
+
+        ws.onmessage = async (e) => {
+            console.log("websocket message", e.data);
+
+            await confirmPayment();
+        }
+
         loadFoodList();
     }, []);
 

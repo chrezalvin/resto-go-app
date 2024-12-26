@@ -5,7 +5,7 @@ import { Screens } from './Screens';
 import { NavigationContainer } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import { useFonts } from 'expo-font';
-import { populateAsyncStorage } from './libs/AsyncStorage';
+import { populateAsyncStorage, setItem } from './libs/AsyncStorage';
 import { useEffect } from 'react';
 import { store, useAppDispatch, useAppSelector } from './state';
 import { Provider } from 'react-redux';

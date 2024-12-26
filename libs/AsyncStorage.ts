@@ -1,15 +1,16 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Customer, Transaction } from "../api/models";
 
 interface AsyncStorageItem {
     isDark: boolean;
-    customer_id: string | null;
-    previous_transaction_id: string | null;
+    customer_id: Customer["customer_id"] | null;
+    previous_transaction_id: Transaction["transaction_id"][];
 }
 
 const initialAsyncStorageItem: AsyncStorageItem = {
     isDark: true,
     customer_id: null,
-    previous_transaction_id: null,
+    previous_transaction_id: [],
 }
 
 export async function populateAsyncStorage(): Promise<void> {

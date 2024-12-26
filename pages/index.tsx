@@ -7,6 +7,8 @@ import foodDetail from "./FoodDetail";
 import HappyEating from "./HappyEating";
 import qrCashPayment from "./QrCashPayment";
 import FoodFinished from "./FoodFinished";
+import TransactionHistory from "./TransactionHistory";
+import TransactionView from "./TransactionView";
 
 import CashierHome from "./CashierHome";
 import CashierBarcodeScanner from "./CashierBarcodeScanner";
@@ -23,6 +25,8 @@ export const pagesList: PageIndex<any>[] = [
     HappyEating,
     qrCashPayment,
     FoodFinished,
+    TransactionHistory,
+    TransactionView,
 
     CashierHome,
     CashierBarcodeScanner,

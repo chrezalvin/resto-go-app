@@ -7,10 +7,11 @@ import { getCurrentPositionAsync, requestForegroundPermissionsAsync } from "expo
 import { getItem, setItem } from "../libs/AsyncStorage";
 import { useState, useEffect } from "react";
 import { View } from "react-native";
-import { ActivityIndicator, Button, Text } from "react-native-paper";
+import { ActivityIndicator, Button, Icon, IconButton, Text } from "react-native-paper";
 import {impactAsync, ImpactFeedbackStyle} from "expo-haptics";
 import { authenticate, getProfile } from "../api/services/authenticate";
 import colors from "../styles/defaultSettings";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 const routeName = routeList.QrScanner;
 type QrScannerProps = NativeStackScreenProps<RouteStackParamList, typeof routeName>;
@@ -50,7 +51,7 @@ export function QrScanner(props: QrScannerProps){
     const [error, setError] = useState<string | null>(null);
 
     async function checkIfUserIsAuthenticated(): Promise<boolean>{
-        // await setItem("customer_id", "e492cc79-3a73-4b24-9703-b6b7ad15d29a")
+        // await setItem("customer_id", "1a85b7cb-affd-45d8-b374-213ead0647df")
 
         try{
             console.log("checking if user is authenticated");
@@ -229,6 +230,20 @@ export function QrScanner(props: QrScannerProps){
                 <Text style={[styles.textWarning, styles.fwBold]} variant="labelLarge">
                     {error ?? ""}
                 </Text>
+
+                <View style={[
+                    styles.absolute,
+                    styles.top0,
+                    styles.right0,
+                    styles.m2,
+                ]}>
+                    <IconButton
+                        icon="history"
+                        iconColor="white"
+                        size={30}
+                        onPress={() => props.navigation.navigate(routeList.transactionHistory)}
+                    />
+                </View>
 
                 {
                     isLoading && (

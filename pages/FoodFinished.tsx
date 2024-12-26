@@ -59,7 +59,7 @@ export function FoodFinished(props: FoodDetailProps){
     }
 
     useEffect(() => {
-        Audio.Sound.createAsync(dingAudio);
+        playSound(dingAudio);
     }, []);
 
     return (

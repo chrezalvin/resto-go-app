@@ -7,6 +7,8 @@ export const routeList = {
     happyEating: "happyEating",
     qrCashPayment: "qrCashPayment",
     foodFinished: "foodFinished",
+    transactionHistory: "transactionHistory",
+    transactionView: "transactionView",
     
     // Cashier pages
     cashierhome: "cashierhome",
@@ -19,6 +21,7 @@ export const routeList = {
 } as const;
 
 export type RouteStackParamList = {
+    // Customer Pages
     [routeList.QrScanner]: undefined;
     [routeList.pickFood]: undefined;
     [routeList.foodDetail]: undefined;
@@ -27,6 +30,10 @@ export type RouteStackParamList = {
     [routeList.happyEating]: undefined;
     [routeList.qrCashPayment]: undefined;
     [routeList.foodFinished]: undefined;
+    [routeList.transactionHistory]: undefined;
+    [routeList.transactionView]: {
+        transaction_id: number;
+    };
 
     // Cashier pages
     [routeList.cashierhome]: undefined;

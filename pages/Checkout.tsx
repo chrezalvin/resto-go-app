@@ -1,16 +1,17 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, ScrollView, Image, Animated, Easing, Dimensions, Touchable, TouchableOpacity, ImageSourcePropType } from 'react-native';
+import { View, ScrollView, Image, Animated, Easing, Dimensions, TouchableOpacity, ImageSourcePropType, ActivityIndicator } from 'react-native';
 import { Text, Button, Card, Modal, Portal, Divider } from 'react-native-paper';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { routeList, RouteStackParamList } from '../shared';
 import styles from '../styles';
 import BackButton from '../components/BackButton';
-import { transaction_checkout } from '../api/services/payment';
+import { createCashlessPayment, transaction_checkout } from '../api/services/payment';
 import { CheckoutResponse } from '../api/models/CheckoutResponse';
 import { useAppDispatch, useAppSelector } from '../state';
 import { FoodList } from '../api/models/FoodList';
 import colors from '../styles/defaultSettings';
 import { PageIndex } from '../libs';
+import { getItem, setItem } from '../libs/AsyncStorage';
 
 // Import images
 const cashImage = require('../assets/images/Cash.png');
@@ -33,6 +34,40 @@ export function Checkout({ navigation }: CheckoutProps) {
     const [error, setError] = useState<string | null>(null);
 
     const animatedValue = useRef(new Animated.Value(0)).current;
+
+    async function doCashlessPayment(){
+        setIsLoading(true);
+        setError(null);
+
+        try{
+            const transaction = await createCashlessPayment({
+                note: "",
+                food_list: Object
+                    .entries(cart)
+                    .map(([key, value]) => ({
+                        food_id: parseInt(key),
+                        quantity: value
+                    }))
+            });
+
+            const transactionId = transaction.transaction_id;
+            const transactionIdList = await getItem("previous_transaction_id");
+            
+            if(transactionIdList)
+                await setItem("previous_transaction_id", [transactionId, ...transactionIdList]);
+
+            navigation.replace(routeList.foodWaiting);
+        }
+        catch(e){
+            console.log(e);
+
+            if(e instanceof Error)
+                setError(e.message);
+        }
+        finally{
+            setIsLoading(false);
+        }
+    }
 
     const handlePaymentMethodSelect = (method: string) => {
         setModalVisible(false);
@@ -286,7 +321,7 @@ export function Checkout({ navigation }: CheckoutProps) {
                                         image={debitImage}
                                         title="Debit"
                                         description="Gunakan debit card pada pembayaran"
-                                        onPress={() => handlePaymentMethodSelect('Debit')}
+                                        onPress={() => doCashlessPayment()}
                                     />
                                     <PaymentMethodButtonUI
                                         image={qrisImage}
@@ -299,7 +334,54 @@ export function Checkout({ navigation }: CheckoutProps) {
                         </Card>
                     </Animated.View>
                 </Modal>
+
+                {
+                    isLoading && (
+                        <View style={[
+                            styles.absolute,
+                            styles.top0,
+                            styles.left0,
+                            styles.right0,
+                            styles.bottom0,
+                        ]}>
+                            <View 
+                                style={[
+                                    {
+                                        opacity: 0.5
+                                    },
+                                    styles.absolute,
+                                    styles.top0,
+                                    styles.left0,
+                                    styles.right0,
+                                    styles.bottom0,
+                                    styles.bgMuted,
+                                ]}
+                            />
+                            <View style={[
+                                styles.flexHorizontal,
+                                styles.justifyCenter,
+                                styles.alignItemsCenter,
+                                styles.containerFill,
+                                styles.gap3,
+                            ]}>
+                                <View style={[
+                                    {
+                                        width: 100,
+                                        height: 100,
+                                        elevation: 10,
+                                    },
+                                    styles.bgLight,
+                                    styles.justifyCenter,
+                                    styles.alignItemsCenter,
+                                ]}>
+                                    <ActivityIndicator size={50} />
+                                </View>
+                            </View>
+                        </View>
+                    )
+                }
             </Portal>
+            
         </View>
     );
 }
