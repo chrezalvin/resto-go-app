@@ -7,11 +7,10 @@ import { getCurrentPositionAsync, requestForegroundPermissionsAsync } from "expo
 import { getItem, setItem } from "../libs/AsyncStorage";
 import { useState, useEffect } from "react";
 import { View } from "react-native";
-import { ActivityIndicator, Button, Icon, IconButton, Text } from "react-native-paper";
+import { ActivityIndicator, Button, IconButton, Text } from "react-native-paper";
 import {impactAsync, ImpactFeedbackStyle} from "expo-haptics";
 import { authenticate, getProfile } from "../api/services/authenticate";
 import colors from "../styles/defaultSettings";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 const routeName = routeList.QrScanner;
 type QrScannerProps = NativeStackScreenProps<RouteStackParamList, typeof routeName>;
