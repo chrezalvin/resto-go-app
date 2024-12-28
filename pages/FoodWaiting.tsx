@@ -6,8 +6,6 @@ import { ActivityIndicator, Text } from "react-native-paper";
 import styles from "../styles";
 import { useEffect, useState } from "react";
 import { getProfile } from "../api/services/authenticate";
-import config from "../appConfig.json";
-import { getItem } from "../libs/AsyncStorage";
 import { createCustomerWebSocket } from "../shared/websocket";
 
 const foodWaitingImg = require("../assets/images/pesanan_berhasil.png");

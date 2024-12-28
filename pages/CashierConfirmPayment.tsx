@@ -38,7 +38,6 @@ export function CashierConfirmPayment({ navigation }: CashierConfirmPaymentProps
                     quantity: value,
                 }));
 
-            
             console.log(`using data: ${JSON.stringify(data)}`);
             const res = await transaction_checkout(data);
 

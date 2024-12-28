@@ -49,7 +49,6 @@ export function CashierBarcodeScanner(props: CashierDetailProps){
     async function onBarcodeScanned(data: BarcodeScanningResult){
         setIsLoading(true);
         setError(null);
-        console.log(data);
 
         try{
             const dataJson = JSON.parse(data.data);

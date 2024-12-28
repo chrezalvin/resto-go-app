@@ -3,12 +3,12 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { routeList, RouteStackParamList } from "../shared";
 import styles from "../styles";
 import { BarcodeScanningResult, CameraView, useCameraPermissions } from "expo-camera";
-import { getCurrentPositionAsync, requestForegroundPermissionsAsync } from "expo-location";
+import { getCurrentPositionAsync, LocationObject, requestForegroundPermissionsAsync } from "expo-location";
 import { getItem, setItem } from "../libs/AsyncStorage";
 import { useState, useEffect } from "react";
 import { View } from "react-native";
 import { ActivityIndicator, Button, IconButton, Text } from "react-native-paper";
-import {impactAsync, ImpactFeedbackStyle} from "expo-haptics";
+import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 import { authenticate, getProfile } from "../api/services/authenticate";
 import colors from "../styles/defaultSettings";
 
@@ -21,19 +21,11 @@ interface Location{
 }
 
 interface BarcodeDataType{
-    long: number;
-    lat: number;
     seat_id: number;
 }
 
 function isBarcodeDataType(value: unknown): value is BarcodeDataType{
     if(typeof value !== "object" || value === null)
-        return false;
-
-    if(!("long" in value) || typeof value.long !== "number")
-        return false;
-
-    if(!("lat" in value) || typeof value.lat !== "number")
         return false;
 
     if(!("seat_id" in value) || typeof value.seat_id !== "number")
@@ -50,8 +42,6 @@ export function QrScanner(props: QrScannerProps){
     const [error, setError] = useState<string | null>(null);
 
     async function checkIfUserIsAuthenticated(): Promise<boolean>{
-        // await setItem("customer_id", "1a85b7cb-affd-45d8-b374-213ead0647df")
-
         try{
             console.log("checking if user is authenticated");
             const customer_id = await getItem("customer_id");
@@ -99,10 +89,13 @@ export function QrScanner(props: QrScannerProps){
 
             console.log(barcodeData);
 
-            // wait for 3 second
-            await new Promise((resolve) => setTimeout(resolve, 3000));
+            // get location
+            const loc = await getLocation();
 
-            const userData = await authenticate(barcodeData.seat_id, barcodeData.long, barcodeData.lat);
+            if(!loc)
+                throw new Error("Please enable location permission to continue");
+
+            const userData = await authenticate(barcodeData.seat_id, loc.coords.longitude, loc.coords.latitude);
 
             if(userData){
                 console.log("setting up user data to the storage");
@@ -113,18 +106,14 @@ export function QrScanner(props: QrScannerProps){
             props.navigation.replace(routeList.pickFood);
         }
         catch(e){
-            console.log(`error: ${e}`);
-            if(e instanceof Error)
-                setError(e.message);
-            else
-                setError("Unknown error occured");
+            setError("Gagal mengakses data atau lokasi tidak valid");
         }
         finally{
             setIsLoading(false);
         }
     }
 
-    async function getLocation(){
+    async function getLocation(): Promise<LocationObject | undefined>{
         console.log("getting location");
 
         const status = await requestForegroundPermissionsAsync();
@@ -134,14 +123,21 @@ export function QrScanner(props: QrScannerProps){
             
             const position = await getCurrentPositionAsync({});
 
-            console.log(position);
-
             setLocation({
                 latitude: position.coords.latitude,
                 longitude: position.coords.longitude,
             });
 
-            console.log("location", location);
+            return position;
+
+            // console.log(position);
+
+            // setLocation({
+            //     latitude: position.coords.latitude,
+            //     longitude: position.coords.longitude,
+            // });
+
+            // console.log("location", location);
         }
     }
 

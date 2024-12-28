@@ -22,11 +22,9 @@ const routeName = routeList.checkout;
 type CheckoutProps = NativeStackScreenProps<RouteStackParamList, typeof routeName>;
 
 export function Checkout({ navigation }: CheckoutProps) {
-    const dispatch = useAppDispatch();
     const cart = useAppSelector(state => state.cart.cart);
 
     const [isModalVisible, setModalVisible] = useState(false);
-    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('');
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [checkoutList, setCheckoutList] = useState<CheckoutResponse[]>([]);

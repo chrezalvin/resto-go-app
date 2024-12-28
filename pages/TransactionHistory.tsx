@@ -5,8 +5,8 @@ import { useEffect, useState } from "react";
 import { getTransactionBatch } from "../api/services/transaction";
 import { TransactionView } from "../api/models/TransactionView";
 import { getItem } from "../libs/AsyncStorage";
-import { Image, RefreshControl, ScrollView, Touchable, TouchableHighlight, TouchableOpacity, View } from "react-native";
-import { ActivityIndicator, Card, Icon, Text, TouchableRipple } from "react-native-paper";
+import { Image, RefreshControl, ScrollView, View } from "react-native";
+import { ActivityIndicator, Card, Icon, Text } from "react-native-paper";
 import BackButton from "../components/BackButton";
 import styles from "../styles";
 
