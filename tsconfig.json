@@ -1,17 +1,6 @@
 {
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
-    "strict": true,
-    "baseUrl": ".",
-    "paths": {
-      "@assets/*": ["assets/*"],
-      "@styles": ["styles"],
-      "@libs": ["libs"],
-      "@components": ["components"],
-      "@shared": ["shared"],
-      "@redux": ["state"],
-      "@api": ["api"],
-      "@models": ["api/models"],
-    }
+    "strict": true
   }
 }

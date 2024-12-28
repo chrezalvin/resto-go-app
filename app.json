@@ -1,15 +1,15 @@
 {
   "expo": {
-    "name": "resto-go-app",
-    "slug": "resto-go-app",
+    "name": "Resto Go",
+    "slug": "resto-go",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#892B1B"
     },
     "ios": {
       "supportsTablet": true
@@ -18,10 +18,20 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.chrealvin.restogoapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      "expo-font"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "ecb366b2-d973-49fe-a928-6be4f513b7f2"
+      }
+    },
+    "owner": "chrealvin"
   }
 }

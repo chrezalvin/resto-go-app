@@ -1,23 +1,22 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import pagesList from "pages";
-import { View } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { routeList, RouteStackParamList } from "@shared";
+import { useTheme } from "react-native-paper";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { routeList, RouteStackParamList } from "./shared";
+import pagesList from "./pages";
 
 export function Screens(){
     const Stack = createNativeStackNavigator<RouteStackParamList>();
-    const insets = useSafeAreaInsets();
-  
+    const rnpTheme = useTheme();
+
     return (
-      <View style={[
-        {
-          paddingTop: insets.top,
-          paddingBottom: insets.bottom,
-          paddingLeft: insets.left,
-          paddingRight: insets.right,
+      <SafeAreaView
+        mode="padding"
+        edges={["bottom", "left", "right", "top"]}
+        style={{
           flex: 1,
-        },
-      ]}>
+          backgroundColor: rnpTheme.colors.background,
+        }}
+      >
         <Stack.Navigator initialRouteName={routeList.QrScanner}>
           {
             pagesList.map((page) => 
@@ -30,8 +29,6 @@ export function Screens(){
             )
           }
         </Stack.Navigator>
-      </View>
-    );
-}
-
-export default Screens;
+      </SafeAreaView>
+    ); 
+  }
